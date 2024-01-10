@@ -4,7 +4,7 @@ from tensorflow.keras.models import Model
 
 class UnetBuilder:
     @classmethod
-    def build_unet(cls, input_shape):
+    def build_unet(cls, input_shape, n_classes):
         inputs = Input(input_shape)
 
         # Encoder path
@@ -22,7 +22,7 @@ class UnetBuilder:
         d3 = cls.decoder_block(inputs=d2, skip_conn_layer=s2, num_filters=128)
         d4 = cls.decoder_block(inputs=d3, skip_conn_layer=s1, num_filters=64)
 
-        outputs = Conv2D(filters=16, kernel_size=1, padding="same", activation="softmax")(d4)  # 16 classes
+        outputs = Conv2D(filters=n_classes, kernel_size=1, padding="same", activation="softmax")(d4)
 
         return Model(inputs, outputs, name="UNet")
 
