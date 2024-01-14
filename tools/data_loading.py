@@ -1,7 +1,7 @@
 from glob import glob
 import os
-from pydicom import dcmread
 import numpy as np
+import cv2
 
 
 def load_data(path):
@@ -12,14 +12,14 @@ def load_data(path):
 
 def read_image(path):
     path = path.decode()
-    image = dcmread(fp=path).pixel_array
+    image = cv2.imread(filename=path, flags=cv2.IMREAD_COLOR)
     image = image / 255.0
     return image
 
 
 def read_mask(path):
     path = path.decode()
-    mask = dcmread(fp=path).pixel_array
+    mask = cv2.imread(filename=path, flags=cv2.IMREAD_GRAYSCALE)
     mask = mask / 255.0
     mask = np.expand_dims(a=mask, axis=-1)
     return mask
