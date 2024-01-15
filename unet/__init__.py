@@ -70,7 +70,7 @@ class UnetBuilder:
         :param inputs: layer to connect to the decoder block
         :param skip_conn_layer: skip connection layer used for concatenating to input layer of the decoder block
         :param num_filters: number of filters on convolutional layers of the block
-        :return:
+        :return: decoder block connected to the given inputs
         """
         curr_layer = Conv2DTranspose(filters=num_filters, kernel_size=(2, 2), strides=2, padding="same")(inputs)
         curr_layer = Concatenate()([curr_layer, skip_conn_layer])
