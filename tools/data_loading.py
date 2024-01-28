@@ -2,6 +2,7 @@ from glob import glob
 import os
 import numpy as np
 import cv2
+import json
 
 
 def load_data(path):
@@ -28,20 +29,39 @@ def read_image(path):
     :param path: path to image
     :return: normalized image
     """
-    path = path.decode()
     image = cv2.imread(filename=path, flags=cv2.IMREAD_COLOR)
     image = image / 255.0
+    image = image.astype(np.float32)
     return image
 
 
-def read_mask(path):
+def read_mask(path, colormap):
     """
-    Reads single mask from given path and normalizes it. Also extends its dimension because it's a grayscale mask(1 channel).
+    Reads single mask from given path and normalizes it.
     :param path: path to mask
-    :return: normalized mask with extended extra dimension.
+    :param colormap: dictionary representing colormap with labels of a single mask
+    :return: list of images where each image represents a mask of a specific label
     """
-    path = path.decode()
-    mask = cv2.imread(filename=path, flags=cv2.IMREAD_GRAYSCALE)
-    mask = mask / 255.0
-    mask = np.expand_dims(a=mask, axis=-1)
-    return mask
+    mask = cv2.imread(path, flags=cv2.IMREAD_COLOR)
+    output = []
+    for color in colormap:
+        cmap = np.all(np.equal(mask, color), axis=-1)
+        output.append(cmap)
+    output = np.stack(output, axis=-1)
+    output = output.astype(np.uint8)
+    return output
+
+
+def get_colormap(path):
+    """
+    Reads JSON file which contains labels and their pixel values.
+    :param path: path to colormap JSON file
+    :return: tuple containing list of all labels[0] and all pixel values of labels[1]
+    """
+    json_file = open(path)
+    colormap = json.load(json_file)
+    classes = [organ for organ in colormap["labels"].values()]
+    colormap = [label for label in colormap["labels"].keys()]
+    colormap = [np.uint8(int(label)) for label in colormap]
+    return classes, colormap
+

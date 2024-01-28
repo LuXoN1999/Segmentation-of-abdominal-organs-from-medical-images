@@ -33,7 +33,7 @@ class UnetBuilder:
 
         outputs = Conv2D(filters=n_classes, kernel_size=1, padding="same", activation="softmax")(d4)
 
-        return Model([inputs], [outputs], name="UNet")
+        return Model(inputs, outputs, name="UNet")
 
     @classmethod
     def conv_block(cls, inputs, num_filters):
