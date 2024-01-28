@@ -28,9 +28,9 @@ def read_image(path):
     :param path: path to image
     :return: normalized image
     """
-    path = path.decode()
     image = cv2.imread(filename=path, flags=cv2.IMREAD_COLOR)
     image = image / 255.0
+    image = image.astype(np.float32)
     return image
 
 
