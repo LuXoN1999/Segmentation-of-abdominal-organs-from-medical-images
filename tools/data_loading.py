@@ -2,6 +2,7 @@ from glob import glob
 import os
 import numpy as np
 import cv2
+import json
 
 
 def load_data(path):
@@ -50,4 +51,17 @@ def read_mask(path, colormap):
     output = output.astype(np.uint8)
     return output
 
+
+def get_colormap(path):
+    """
+    Reads JSON file which contains labels and their pixel values.
+    :param path: path to colormap JSON file
+    :return: tuple containing list of all labels[0] and all pixel values of labels[1]
+    """
+    json_file = open(path)
+    colormap = json.load(json_file)
+    classes = [organ for organ in colormap["labels"].values()]
+    colormap = [label for label in colormap["labels"].keys()]
+    colormap = [np.uint8(int(label)) for label in colormap]
+    return classes, colormap
 
