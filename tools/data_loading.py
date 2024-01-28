@@ -34,14 +34,20 @@ def read_image(path):
     return image
 
 
-def read_mask(path):
+def read_mask(path, colormap):
     """
-    Reads single mask from given path and normalizes it. Also extends its dimension because it's a grayscale mask(1 channel).
+    Reads single mask from given path and normalizes it.
     :param path: path to mask
-    :return: normalized mask with extended extra dimension.
+    :param colormap: dictionary representing colormap with labels of a single mask
+    :return: list of images where each image represents a mask of a specific label
     """
-    path = path.decode()
-    mask = cv2.imread(filename=path, flags=cv2.IMREAD_GRAYSCALE)
-    mask = mask / 255.0
-    mask = np.expand_dims(a=mask, axis=-1)
-    return mask
+    mask = cv2.imread(path, flags=cv2.IMREAD_COLOR)
+    output = []
+    for color in colormap:
+        cmap = np.all(np.equal(mask, color), axis=-1)
+        output.append(cmap)
+    output = np.stack(output, axis=-1)
+    output = output.astype(np.uint8)
+    return output
+
+
