@@ -13,3 +13,6 @@ Poveznica na skup podataka(amos22): https://zenodo.org/record/7155725#.Y0OOCOxBz
 ## Master's thesis
 
 Link to dataset(amos22): https://zenodo.org/record/7155725#.Y0OOCOxBztM
+
+
+Switching to PyTorch in progress...
