@@ -8,6 +8,7 @@ torch = "*"
 torchvision = "*"
 numpy = "*"
 matplotlib = "*"
+pydicom = "*"
 
 [dev-packages]
 
