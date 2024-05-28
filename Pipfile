@@ -10,6 +10,7 @@ numpy = "*"
 matplotlib = "*"
 pydicom = "*"
 pillow = "*"
+jupyter = "*"
 
 [dev-packages]
 
