@@ -9,6 +9,7 @@ torchvision = "*"
 numpy = "*"
 matplotlib = "*"
 pydicom = "*"
+pillow = "*"
 
 [dev-packages]
 
