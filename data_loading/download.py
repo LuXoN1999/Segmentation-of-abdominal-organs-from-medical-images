@@ -1,5 +1,12 @@
+import sys
 import os
 from zipfile import ZipFile
+def __get_progress_bar(current, total, width=80):
+    progress_message = f"Downloading dataset: {round(current / total * 100, 2)}% [{current} / {total}] bytes"
+    sys.stdout.write("\r" + progress_message)
+    sys.stdout.flush()
+
+
 def __unzip_dataset():
     print("Extracting dataset...")
     zip_file_path = "./CHAOS_dataset.zip"
