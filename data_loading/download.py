@@ -26,7 +26,7 @@ def __get_project_path() -> str:
 def __unzip_dataset():
     print("\nExtracting dataset...")
     zip_file_path = "./CHAOS_dataset.zip"
-    if not os.path.exists(zip_file_path):
+    if not Path(zip_file_path).exists():
         raise FileNotFoundError("Dataset zip file is not found in current directory.")
     with ZipFile(file=zip_file_path, mode="r") as zip_reference:
         zip_reference.extractall(path=__get_project_path())
