@@ -14,7 +14,7 @@ def __get_progress_bar(current, total, width=80):
 
 
 def __unzip_dataset():
-    print("Extracting dataset...")
+    print("\nExtracting dataset...")
     zip_file_path = "./CHAOS_dataset.zip"
     if not os.path.exists(zip_file_path):
         raise FileNotFoundError("Dataset zip file is not found in current directory.")
