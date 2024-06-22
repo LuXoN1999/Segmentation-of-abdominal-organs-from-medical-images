@@ -38,7 +38,7 @@ def _get_y_path(path_to_image: str) -> Path:
     return Path(mask_path)
 
 
-class ChaosDataset(Dataset):
+class CHAOSDataset(Dataset):
 
     def __init__(self, dataset_type: str = "train", validation_split: float = 0.25):
         _validate_params(dataset_type=dataset_type, validation_split=validation_split)
