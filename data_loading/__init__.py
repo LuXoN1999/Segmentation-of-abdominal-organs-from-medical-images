@@ -1,3 +1,5 @@
+import os
+from glob import glob
 from pathlib import Path
 
 from torch.utils.data import Dataset
@@ -19,8 +21,26 @@ def _validate_params(dataset_type: str, validation_split: float):
         raise ValueError("Parameter 'validation_split' must be in range (0,1)(excluding).")
 
 
+def _get_x_paths() -> list[Path]:
+    """Fetches list of DICOM image paths inside CHAOS dataset folder."""
+    dataset_path = os.path.join(_get_project_path(), "CHAOS dataset")
+    dcm_paths = sorted(glob(pathname=f"{dataset_path}/**/*.dcm", recursive=True))
+    return [Path(dcm_path) for dcm_path in dcm_paths if _get_y_path(path_to_image=dcm_path).exists()]
+
+
+def _get_y_path(path_to_image: str) -> Path:
+    """Fetches mask path for given DICOM image path from CHAOS dataset folder."""
+    mask_path = path_to_image.replace("DICOM_anon", "Ground")
+    for phase in ["InPhase", "OutPhase"]:
+        if phase in mask_path:
+            mask_path = mask_path.replace(phase, "")
+    mask_path = mask_path.replace(".dcm", ".png")
+    return Path(mask_path)
+
+
 class ChaosDataset(Dataset):
 
     def __init__(self, dataset_type: str = "train", validation_split: float = 0.25):
         _validate_params(dataset_type=dataset_type, validation_split=validation_split)
         self.dataset_type = dataset_type
+        self.image_paths = _get_x_paths()
