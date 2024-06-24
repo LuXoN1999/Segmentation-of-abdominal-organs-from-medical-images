@@ -44,3 +44,6 @@ class CHAOSDataset(Dataset):
         _validate_params(dataset_type=dataset_type, validation_split=validation_split)
         self.dataset_type = dataset_type
         self.image_paths = _get_x_paths()
+        n_images = int(validation_split * len(self.image_paths))  # number of images to split
+        self.image_paths = self.image_paths[n_images:] if self.dataset_type == "train" else self.image_paths[:n_images]
+        self.mask_paths = [_get_y_path(str(image_path)) for image_path in self.image_paths]
