@@ -2,6 +2,10 @@ import os
 from glob import glob
 from pathlib import Path
 
+import matplotlib.pyplot as plt
+import numpy as np
+from PIL import Image
+from pydicom import dcmread
 from torch.utils.data import Dataset
 
 
@@ -38,6 +42,16 @@ def _get_y_path(path_to_image: str) -> Path:
     return Path(mask_path)
 
 
+def _plot_sample(dataset_pair: tuple[np.array, np.array], name: str = "Dataset sample"):
+    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(10, 5))
+    fig.suptitle(f"PLOT: {name}")
+    axes[0].set_title("Image")
+    axes[0].imshow(dataset_pair[0])
+    axes[1].set_title("Mask")
+    axes[1].imshow(dataset_pair[1])
+    plt.show()
+
+
 class CHAOSDataset(Dataset):
 
     def __init__(self, dataset_type: str = "train", validation_split: float = 0.25, log_feedback: bool = False):
@@ -61,3 +75,10 @@ class CHAOSDataset(Dataset):
     def __iter__(self) -> tuple:
         for image_path, mask_path in zip(self.image_paths, self.mask_paths):
             yield image_path, mask_path
+
+    def plot_sample(self, index: int):
+        image_path, mask_path = self[index]
+        image = np.array(dcmread(fp=image_path).pixel_array)
+        mask = np.array(Image.open(fp=mask_path))
+        # TODO: Add preprocessing steps for images and masks
+        _plot_sample(dataset_pair=(image, mask), name=f"Sample on index {index}/{len(self) - 1}")
