@@ -50,3 +50,7 @@ class CHAOSDataset(Dataset):
         if log_feedback:
             ds_type_ext = "Training" if self.dataset_type == "train" else "Validation"
             print(f"{ds_type_ext} dataset instance created. \nNumber of images: {len(self.image_paths)}")
+
+    def __getitem__(self, index: int) -> tuple:
+        # TODO: Add preprocessing steps for images and masks
+        return self.image_paths[index], self.mask_paths[index]
