@@ -54,3 +54,10 @@ class CHAOSDataset(Dataset):
     def __getitem__(self, index: int) -> tuple:
         # TODO: Add preprocessing steps for images and masks
         return self.image_paths[index], self.mask_paths[index]
+
+    def __len__(self) -> int:
+        return len(self.image_paths)
+
+    def __iter__(self) -> tuple:
+        for image_path, mask_path in zip(self.image_paths, self.mask_paths):
+            yield image_path, mask_path
