@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 from pydicom import dcmread
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 
 
 def _get_project_path() -> str:
@@ -82,3 +82,12 @@ class CHAOSDataset(Dataset):
         mask = np.array(Image.open(fp=mask_path))
         # TODO: Add preprocessing steps for images and masks
         _plot_sample(dataset_pair=(image, mask), name=f"Sample on index {index}/{len(self) - 1}")
+
+
+def generate_dataloaders(batch_size: int, validation_split: float) -> dict:
+    train_dataset = CHAOSDataset(dataset_type="train", validation_split=validation_split)
+    valid_dataset = CHAOSDataset(dataset_type="valid", validation_split=validation_split)
+    return {
+        "train": DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True, num_workers=0),
+        "valid": DataLoader(dataset=valid_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
+    }
