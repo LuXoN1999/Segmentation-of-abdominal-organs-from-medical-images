@@ -1,3 +1,4 @@
+from torch import cat
 from torch.nn import Module, Sequential, Conv2d, ReLU, MaxPool2d, Upsample
 
 
@@ -34,3 +35,38 @@ class UNet(Module):
         self.dec_conv1 = conv_block(in_channels=128 + 64, out_channels=64)
 
         self.final_layer = Conv2d(in_channels=64, out_channels=n_classes, kernel_size=1)
+
+    def forward(self, x):
+        # encoder path
+        x_enc1 = self.enc_conv1(x)
+        x1 = self.max_pool(x_enc1)
+
+        x_enc2 = self.enc_conv2(x1)
+        x2 = self.max_pool(x_enc2)
+
+        x_enc3 = self.enc_conv3(x2)
+        x3 = self.max_pool(x_enc3)
+
+        x_enc4 = self.enc_conv4(x3)
+        x4 = self.max_pool(x_enc4)
+
+        # bottleneck
+        x_b = self.b_conv(x4)
+        x5 = self.up_conv(x_b)
+
+        # decoder path
+        x_dec4 = self.dec_conv4(cat(tensors=[x5, x_enc4], dim=1))
+        x6 = self.up_conv(x_dec4)
+
+        x_dec3 = self.dec_conv3(cat(tensors=[x6, x_enc3], dim=1))
+        x7 = self.up_conv(x_dec3)
+
+        x_dec2 = self.dec_conv2(cat(tensors=[x7, x_enc2], dim=1))
+        x8 = self.up_conv(x_dec2)
+
+        x_dec1 = self.dec_conv1(cat(tensors=[x8, x_enc1], dim=1))
+        x9 = self.up_conv(x_dec1)
+
+        output = self.final_layer(x9)
+
+        return output
