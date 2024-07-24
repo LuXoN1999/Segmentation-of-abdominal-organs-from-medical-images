@@ -1,5 +1,6 @@
 from torch import cat
 from torch.nn import Module, Sequential, Conv2d, ReLU, MaxPool2d, Upsample
+from torchsummary import summary
 
 
 def conv_block(in_channels: int, out_channels: int):
@@ -70,3 +71,6 @@ class UNet(Module):
         output = self.final_layer(x9)
 
         return output
+
+    def summary(self):
+        summary(model=self, input_size=(3, 64, 64))
