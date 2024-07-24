@@ -12,6 +12,7 @@ pydicom = "*"
 pillow = "*"
 jupyter = "*"
 wget = "*"
+torchsummary = "*"
 
 [dev-packages]
 
