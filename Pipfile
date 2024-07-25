@@ -6,12 +6,13 @@ name = "pypi"
 [packages]
 torch = "*"
 torchvision = "*"
-numpy = "*"
+numpy = "==1.26.4"
 matplotlib = "*"
 pydicom = "*"
 pillow = "*"
 jupyter = "*"
 wget = "*"
+torchsummary = "*"
 
 [dev-packages]
 
