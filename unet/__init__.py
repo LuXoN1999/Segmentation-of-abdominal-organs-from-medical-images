@@ -3,7 +3,7 @@ from torch.nn import Module, Sequential, Conv2d, ReLU, MaxPool2d, Upsample
 from torchsummary import summary
 
 
-def conv_block(in_channels: int, out_channels: int):
+def conv_block(in_channels: int, out_channels: int) -> Sequential:
     return Sequential(
         Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=3, padding=1),
         ReLU(inplace=True),
