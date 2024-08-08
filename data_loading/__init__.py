@@ -1,6 +1,7 @@
 import os
 from glob import glob
 from pathlib import Path
+from typing import Union
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -65,9 +66,14 @@ class CHAOSDataset(Dataset):
             ds_type_ext = "Training" if self.dataset_type == "train" else "Validation"
             print(f"{ds_type_ext} dataset instance created. \nNumber of images: {len(self.image_paths)}")
 
-    def __getitem__(self, index: int) -> tuple:
-        # TODO: Add preprocessing steps for images and masks
-        return self.image_paths[index], self.mask_paths[index]
+    def __getitem__(self, index: Union[int, slice]) -> Union[tuple, list[tuple]]:
+        if isinstance(index, slice):
+            return [self[i] for i in range(*index.indices(len(self)))]
+        elif isinstance(index, int):
+            # TODO: Add preprocessing steps for images and masks
+            return self.image_paths[index], self.mask_paths[index]
+        else:
+            raise TypeError("Index must be an integer or slice element.")
 
     def __len__(self) -> int:
         return len(self.image_paths)
