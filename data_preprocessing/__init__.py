@@ -35,3 +35,7 @@ def _one_hot_encode_mask(mask: Tensor) -> np.array:
     one_hot_encoded_mask = [np.where(mask == uni_val, ones, zeros) for uni_val in organ_values.values()]
     one_hot_encoded_mask = np.stack(one_hot_encoded_mask, axis=0).astype(np.float32)
     return one_hot_encoded_mask
+
+
+def preprocess_image_and_mask(image: np.array, mask: np.array) -> tuple[np.array, np.array]:
+    return IMAGE_PREPROCESSING_PIPELINE(image), MASK_PREPROCESSING_PIPELINE(mask)

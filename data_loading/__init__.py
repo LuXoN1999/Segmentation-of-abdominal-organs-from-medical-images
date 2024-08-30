@@ -10,6 +10,8 @@ from PIL import Image
 from pydicom import dcmread
 from torch.utils.data import Dataset, DataLoader
 
+from data_preprocessing import preprocess_image_and_mask
+
 
 def _get_project_path() -> str:
     current_file_path = Path(__file__).resolve()
@@ -74,8 +76,7 @@ class CHAOSDataset(Dataset):
             image = pydicom.dcmread(fp=self.image_paths[index]).pixel_array
             mask = Image.open(fp=self.mask_paths[index])
             image, mask = np.array(image).astype(np.float32), np.array(mask)
-            # TODO: Add preprocessing steps for images and masks
-            return self.image_paths[index], self.mask_paths[index]
+            return preprocess_image_and_mask(image=image, mask=mask)
         else:
             raise TypeError("Index must be an integer or slice element.")
 
@@ -90,7 +91,6 @@ class CHAOSDataset(Dataset):
         image_path, mask_path = self[index]
         image = np.array(dcmread(fp=image_path).pixel_array)
         mask = np.array(Image.open(fp=mask_path))
-        # TODO: Add preprocessing steps for images and masks
         _plot_sample(dataset_pair=(image, mask), name=f"Sample on index {index}/{len(self) - 1}")
 
 
