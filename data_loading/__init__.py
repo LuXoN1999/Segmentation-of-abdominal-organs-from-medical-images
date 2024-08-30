@@ -5,6 +5,7 @@ from typing import Union
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pydicom
 from PIL import Image
 from pydicom import dcmread
 from torch.utils.data import Dataset, DataLoader
@@ -70,6 +71,9 @@ class CHAOSDataset(Dataset):
         if isinstance(index, slice):
             return [self[i] for i in range(*index.indices(len(self)))]
         elif isinstance(index, int):
+            image = pydicom.dcmread(fp=self.image_paths[index]).pixel_array
+            mask = Image.open(fp=self.mask_paths[index])
+            image, mask = np.array(image).astype(np.float32), np.array(mask)
             # TODO: Add preprocessing steps for images and masks
             return self.image_paths[index], self.mask_paths[index]
         else:
