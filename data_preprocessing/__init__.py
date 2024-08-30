@@ -12,6 +12,14 @@ IMAGE_PREPROCESSING_PIPELINE = transforms.Compose([
     transforms.Lambda(lambda x: (x - x.min()) / (x.max() - x.min()))
 ])
 
+MASK_PREPROCESSING_PIPELINE = transforms.Compose([
+    transforms.ToPILImage(),
+    transforms.Resize(size=(128, 128), interpolation=InterpolationMode.NEAREST),
+    transforms.CenterCrop(size=96),
+    transforms.ToTensor(),
+    transforms.Lambda(lambda x: _one_hot_encode_mask(mask=x))
+])
+
 
 def _one_hot_encode_mask(mask: Tensor) -> np.array:
     mask = mask.squeeze()
