@@ -88,7 +88,7 @@ class CHAOSDataset(Dataset):
             yield image_path, mask_path
 
     def plot_sample(self, index: int):
-        image_path, mask_path = self[index]
+        image_path, mask_path = self.image_paths[index], self.mask_paths[index]
         image = np.array(dcmread(fp=image_path).pixel_array)
         mask = np.array(Image.open(fp=mask_path))
         _plot_sample(dataset_pair=(image, mask), name=f"Sample on index {index}/{len(self) - 1}")
