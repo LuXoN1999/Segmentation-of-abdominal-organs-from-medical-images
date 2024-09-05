@@ -1,12 +1,16 @@
 import os
 from glob import glob
 from pathlib import Path
+from typing import Union
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pydicom
 from PIL import Image
 from pydicom import dcmread
 from torch.utils.data import Dataset, DataLoader
+
+from data_preprocessing import preprocess_image_and_mask
 
 
 def _get_project_path() -> str:
@@ -65,9 +69,16 @@ class CHAOSDataset(Dataset):
             ds_type_ext = "Training" if self.dataset_type == "train" else "Validation"
             print(f"{ds_type_ext} dataset instance created. \nNumber of images: {len(self.image_paths)}")
 
-    def __getitem__(self, index: int) -> tuple:
-        # TODO: Add preprocessing steps for images and masks
-        return self.image_paths[index], self.mask_paths[index]
+    def __getitem__(self, index: Union[int, slice]) -> Union[tuple, list[tuple]]:
+        if isinstance(index, slice):
+            return [self[i] for i in range(*index.indices(len(self)))]
+        elif isinstance(index, int):
+            image = pydicom.dcmread(fp=self.image_paths[index]).pixel_array
+            mask = Image.open(fp=self.mask_paths[index])
+            image, mask = np.array(image).astype(np.float32), np.array(mask)
+            return preprocess_image_and_mask(image=image, mask=mask)
+        else:
+            raise TypeError("Index must be an integer or slice element.")
 
     def __len__(self) -> int:
         return len(self.image_paths)
@@ -77,10 +88,9 @@ class CHAOSDataset(Dataset):
             yield image_path, mask_path
 
     def plot_sample(self, index: int):
-        image_path, mask_path = self[index]
+        image_path, mask_path = self.image_paths[index], self.mask_paths[index]
         image = np.array(dcmread(fp=image_path).pixel_array)
         mask = np.array(Image.open(fp=mask_path))
-        # TODO: Add preprocessing steps for images and masks
         _plot_sample(dataset_pair=(image, mask), name=f"Sample on index {index}/{len(self) - 1}")
 
 
