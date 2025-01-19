@@ -1,6 +1,5 @@
 from torch import cat
 from torch.nn import Module, Sequential, Conv2d, ReLU, MaxPool2d, Upsample, BatchNorm2d
-from torchsummary import summary
 
 
 def conv_block(in_channels: int, out_channels: int) -> Sequential:
@@ -55,38 +54,23 @@ class UNet(Module):
 
     def forward(self, x):
         # encoder path
-        x_enc1 = self.enc_conv1(x)
-        x1 = self.max_pool(x_enc1)
+        x1 = self.enc_conv1(x)
+        x2 = self.enc_conv2(self.max_pool(x1))
+        x3 = self.enc_conv3(self.max_pool(x2))
+        x4 = self.enc_conv4(self.max_pool(x3))
+        x5 = self.enc_conv5(self.max_pool(x4))
 
-        x_enc2 = self.enc_conv2(x1)
-        x2 = self.max_pool(x_enc2)
+        # decoder and concat path
+        d5 = self.up_conv5(x5)
+        d5 = self.dec_conv5(cat((x4, d5), dim=1))
 
-        x_enc3 = self.enc_conv3(x2)
-        x3 = self.max_pool(x_enc3)
+        d4 = self.up_conv4(d5)
+        d4 = self.dec_conv4(cat((x3, d4), dim=1))
 
-        x_enc4 = self.enc_conv4(x3)
-        x4 = self.max_pool(x_enc4)
+        d3 = self.up_conv3(d4)
+        d3 = self.dec_conv3(cat((x2, d3), dim=1))
 
-        # bottleneck
-        x_b = self.b_conv(x4)
-        x5 = self.up_conv(x_b)
+        d2 = self.up_conv2(d3)
+        d2 = self.dec_conv2(cat((x1, d2), dim=1))
 
-        # decoder path
-        x_dec4 = self.dec_conv4(cat(tensors=[x5, x_enc4], dim=1))
-        x6 = self.up_conv(x_dec4)
-
-        x_dec3 = self.dec_conv3(cat(tensors=[x6, x_enc3], dim=1))
-        x7 = self.up_conv(x_dec3)
-
-        x_dec2 = self.dec_conv2(cat(tensors=[x7, x_enc2], dim=1))
-        x8 = self.up_conv(x_dec2)
-
-        x_dec1 = self.dec_conv1(cat(tensors=[x8, x_enc1], dim=1))
-        x9 = self.up_conv(x_dec1)
-
-        output = self.final_layer(x9)
-
-        return output
-
-    def summary(self):
-        summary(model=self, input_size=(3, 64, 64))
+        return self.fin_conv(d2)
