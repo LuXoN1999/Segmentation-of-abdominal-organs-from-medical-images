@@ -1,13 +1,15 @@
 from torch import cat
-from torch.nn import Module, Sequential, Conv2d, ReLU, MaxPool2d, Upsample
+from torch.nn import Module, Sequential, Conv2d, ReLU, MaxPool2d, Upsample, BatchNorm2d
 from torchsummary import summary
 
 
 def conv_block(in_channels: int, out_channels: int) -> Sequential:
     return Sequential(
-        Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=3, padding=1),
+        Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=3, stride=1, padding=1, bias=True),
+        BatchNorm2d(num_features=out_channels),
         ReLU(inplace=True),
-        Conv2d(in_channels=out_channels, out_channels=out_channels, kernel_size=3, padding=1),
+        Conv2d(in_channels=out_channels, out_channels=out_channels, kernel_size=3, stride=1, padding=1, bias=True),
+        BatchNorm2d(num_features=out_channels),
         ReLU(inplace=True)
     )
 
