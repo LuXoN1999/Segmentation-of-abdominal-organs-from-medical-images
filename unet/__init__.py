@@ -14,6 +14,15 @@ def conv_block(in_channels: int, out_channels: int) -> Sequential:
     )
 
 
+def up_conv(in_channels: int, out_channels: int) -> Sequential:
+    return Sequential(
+        Upsample(scale_factor=2, mode="bilinear", align_corners=True),
+        Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=3, stride=1, padding=1, bias=True),
+        BatchNorm2d(num_features=out_channels),
+        ReLU(inplace=True)
+    )
+
+
 class UNet(Module):
 
     def __init__(self, n_classes: int):
