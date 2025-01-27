@@ -13,6 +13,7 @@ pillow = "*"
 jupyter = "*"
 wget = "*"
 torchsummary = "*"
+tensorboard = "*"
 
 [dev-packages]
 
