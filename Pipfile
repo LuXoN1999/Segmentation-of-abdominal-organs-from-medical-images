@@ -4,14 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+torch = "*"
+torchvision = "*"
+numpy = "==1.26.4"
 matplotlib = "*"
-jupyter = "*"
-opencv-python = "*"
-numpy = "*"
 pydicom = "*"
-tqdm = "*"
-scikit-learn = "*"
-tensorflow = "*"
+pillow = "*"
+jupyter = "*"
+wget = "*"
+torchsummary = "*"
+tensorboard = "*"
 
 [dev-packages]
 
