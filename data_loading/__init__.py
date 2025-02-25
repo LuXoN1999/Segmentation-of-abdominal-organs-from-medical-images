@@ -1,13 +1,12 @@
 import os
+import random
 from glob import glob
 from pathlib import Path
 from typing import Union
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pydicom
 from PIL import Image
-from pydicom import dcmread
 from torch.utils.data import Dataset, DataLoader
 
 from data_preprocessing import preprocess_image_and_mask
@@ -46,16 +45,6 @@ def _get_y_path(path_to_image: str) -> Path:
     return Path(mask_path)
 
 
-def _plot_sample(dataset_pair: tuple[np.array, np.array], name: str = "Dataset sample"):
-    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(10, 5))
-    fig.suptitle(f"PLOT: {name}")
-    axes[0].set_title("Image")
-    axes[0].imshow(dataset_pair[0])
-    axes[1].set_title("Mask")
-    axes[1].imshow(dataset_pair[1])
-    plt.show()
-
-
 class CHAOSDataset(Dataset):
 
     def __init__(self, dataset_type: str = "train", validation_split: float = 0.25, log_feedback: bool = False):
@@ -63,6 +52,7 @@ class CHAOSDataset(Dataset):
         self.dataset_type = dataset_type
         self.image_paths = _get_x_paths()
         n_images = int(validation_split * len(self.image_paths))  # number of images to split
+        random.shuffle(self.image_paths)
         self.image_paths = self.image_paths[n_images:] if self.dataset_type == "train" else self.image_paths[:n_images]
         self.mask_paths = [_get_y_path(str(image_path)) for image_path in self.image_paths]
         if log_feedback:
@@ -86,12 +76,6 @@ class CHAOSDataset(Dataset):
     def __iter__(self) -> tuple:
         for image_path, mask_path in zip(self.image_paths, self.mask_paths):
             yield image_path, mask_path
-
-    def plot_sample(self, index: int):
-        image_path, mask_path = self.image_paths[index], self.mask_paths[index]
-        image = np.array(dcmread(fp=image_path).pixel_array)
-        mask = np.array(Image.open(fp=mask_path))
-        _plot_sample(dataset_pair=(image, mask), name=f"Sample on index {index}/{len(self) - 1}")
 
 
 def generate_dataloaders(batch_size: int, validation_split: float) -> dict:
