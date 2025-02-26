@@ -30,9 +30,7 @@ def _get_x_paths() -> list[Path]:
 def _get_y_path(path_to_image: str) -> Path:
     """Fetches mask path for given DICOM image path from CHAOS dataset folder."""
     mask_path = path_to_image.replace("DICOM_anon", "Ground")
-    for phase in ["InPhase", "OutPhase"]:
-        if phase in mask_path:
-            mask_path = mask_path.replace(phase, "")
+    mask_path = mask_path.replace("InPhase", "").replace("OutPhase", "")
     mask_path = mask_path.replace(".dcm", ".png")
     return Path(mask_path)
 
