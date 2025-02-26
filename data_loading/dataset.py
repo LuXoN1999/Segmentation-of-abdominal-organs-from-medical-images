@@ -37,17 +37,18 @@ def _get_y_path(path_to_image: str) -> Path:
 
 class CHAOSDataset(Dataset):
 
-    def __init__(self, dataset_type: str = "train", validation_split: float = 0.25, log_feedback: bool = False):
-        _validate_params(dataset_type=dataset_type, validation_split=validation_split)
+    def __init__(self, dataset_type: str, validation_split: float = 0.20, log_feedback: bool = False):
         self.dataset_type = dataset_type
         self.image_paths = _get_x_paths()
-        n_images = int(validation_split * len(self.image_paths))  # number of images to split
         random.shuffle(self.image_paths)
+
+        n_images = int(validation_split * len(self.image_paths))  # number of images to split
         self.image_paths = self.image_paths[n_images:] if self.dataset_type == "train" else self.image_paths[:n_images]
         self.mask_paths = [_get_y_path(str(image_path)) for image_path in self.image_paths]
+
         if log_feedback:
             ds_type_ext = "Training" if self.dataset_type == "train" else "Validation"
-            print(f"{ds_type_ext} dataset instance created. \nNumber of images: {len(self.image_paths)}")
+            print(f"{ds_type_ext} dataset instance created. \nNumber of samples: {len(self.image_paths)}")
 
     def __getitem__(self, index: Union[int, slice]) -> Union[tuple, list[tuple]]:
         if isinstance(index, slice):
@@ -60,10 +61,10 @@ class CHAOSDataset(Dataset):
         else:
             raise TypeError("Index must be an integer or slice element.")
 
-    def __len__(self) -> int:
+    def __len__(self):
         return len(self.image_paths)
 
-    def __iter__(self) -> tuple:
+    def __iter__(self):
         for image_path, mask_path in zip(self.image_paths, self.mask_paths):
             yield image_path, mask_path
 
