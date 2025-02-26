@@ -9,7 +9,7 @@ from PIL import Image
 from torch.utils.data import Dataset, DataLoader
 from typing_extensions import Union
 
-from data_loading import _get_project_path
+from data_loading import get_project_root
 from data_preprocessing import preprocess_image_and_mask
 
 
@@ -21,8 +21,8 @@ def _validate_params(dataset_type: str, validation_split: float):
 
 
 def _get_x_paths() -> list[Path]:
-    """Fetches list of DICOM image paths inside CHAOS dataset folder."""
-    dataset_path = os.path.join(_get_project_path(), "CHAOS dataset")
+    """Fetches list of valid DICOM image paths inside CHAOS dataset folder."""
+    dataset_path = get_project_root() / "CHAOS dataset"
     dcm_paths = sorted(glob(pathname=f"{dataset_path}/**/*.dcm", recursive=True))
     return [Path(dcm_path) for dcm_path in dcm_paths if _get_y_path(path_to_image=dcm_path).exists()]
 
