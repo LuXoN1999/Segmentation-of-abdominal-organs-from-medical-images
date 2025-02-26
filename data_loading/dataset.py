@@ -12,13 +12,6 @@ from data_loading import get_project_root
 from data_preprocessing import preprocess_image_and_mask
 
 
-def _validate_params(dataset_type: str, validation_split: float):
-    if dataset_type not in ["train", "valid"]:
-        raise ValueError("Parameter 'dataset_type' can only contain values 'train' or 'valid'.")
-    if not 0 < validation_split < 1:
-        raise ValueError("Parameter 'validation_split' must be in range (0,1)(excluding).")
-
-
 def _get_x_paths() -> list[Path]:
     """Fetches list of valid DICOM image paths inside CHAOS dataset folder."""
     dataset_path = get_project_root() / "CHAOS dataset"
