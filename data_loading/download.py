@@ -5,7 +5,7 @@ from zipfile import ZipFile
 
 import wget
 
-from data_loading import _get_project_path
+from data_loading import get_project_root
 
 DATASET_URL = ""  # to be added
 
@@ -22,7 +22,7 @@ def __unzip_dataset():
     if not Path(zip_file_path).exists():
         raise FileNotFoundError("Dataset zip file is not found in current directory.")
     with ZipFile(file=zip_file_path, mode="r") as zip_reference:
-        zip_reference.extractall(path=_get_project_path())
+        zip_reference.extractall(path=get_project_root())
         print("Dataset extracted!")
     os.remove(path=zip_file_path)
 
