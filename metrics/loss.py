@@ -1,4 +1,3 @@
-import torch
 from torch import Tensor
 from torch.nn import functional
 
@@ -21,8 +20,8 @@ def dice_loss(prediction: Tensor, ground_truth: Tensor, smooth: float = 1e-6) ->
     prediction = prediction.view(prediction.shape[0], prediction.shape[1], -1)
     ground_truth = ground_truth.view(ground_truth.shape[0], ground_truth.shape[1], -1)
 
-    intersection = torch.sum(prediction * ground_truth, dim=2)
-    union = torch.sum(prediction, dim=2) + torch.sum(ground_truth, dim=2)
+    intersection = (prediction * ground_truth).sum(dim=2)
+    union = prediction.sum(dim=2) + ground_truth.sum(dim=2) - intersection
     dice = (2. * intersection + smooth) / (union + smooth)
 
     return 1 - dice.mean()
