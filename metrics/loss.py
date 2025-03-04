@@ -20,3 +20,20 @@ def dice_loss(prediction: Tensor, ground_truth: Tensor, smooth: float = 1e-6) ->
     dice = (2. * intersection + smooth) / (union + smooth)
 
     return 1 - dice.mean()
+
+class LossTracker:
+    def __init__(self):
+        self.loss_sum = {"bce": 0.0, "dice": 0.0, "loss": 0.0}
+        self.n_samples = 0
+
+    def update(self, losses: dict, batch_size: int) -> None:
+        for loss in losses.keys():
+            self.loss_sum[loss] += losses[loss] * batch_size
+        self.n_samples += batch_size
+
+    def get_results(self) -> dict:
+        return {cls: score / self.n_samples for cls, score in self.loss_sum.items()}
+
+    def reset(self) -> None:
+        self.loss_sum = {"bce": 0.0, "dice": 0.0, "loss": 0.0}
+        self.n_samples = 0
