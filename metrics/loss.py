@@ -2,16 +2,11 @@ from torch import Tensor
 from torch.nn import functional
 
 
-def calculate_loss(prediction: Tensor, ground_truth: Tensor, losses: dict, bce_weight: float = 0.5) -> Tensor:
+def calculate_loss(prediction: Tensor, ground_truth: Tensor, bce_weight: float = 0.5) -> dict:
     bce = functional.binary_cross_entropy_with_logits(prediction, ground_truth)
     dice = dice_loss(prediction, ground_truth)
     loss = bce * bce_weight + dice * (1 - bce_weight)
-
-    losses["bce"] += bce.data.cpu().numpy() * ground_truth.size(0)
-    losses["dice"] += dice.data.cpu().numpy() * ground_truth.size(0)
-    losses["loss"] += loss.data.cpu().numpy() * ground_truth.size(0)
-
-    return loss
+    return {"bce": bce, "dice": dice, "loss": loss}
 
 
 def dice_loss(prediction: Tensor, ground_truth: Tensor, smooth: float = 1e-6) -> Tensor:
