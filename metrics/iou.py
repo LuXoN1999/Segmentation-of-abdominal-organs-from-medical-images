@@ -34,7 +34,7 @@ class CHAOSIoUTracker:
         self.n_samples += batch_size
 
     def get_results(self) -> dict:
-        return {key: round(value / self.n_samples, 5) for key, value in self.iou_sums.items()}
+        return {cls: round(iou_sum / self.n_samples, 5) for cls, iou_sum in self.iou_sums.items()}
 
     def reset(self) -> None:
         self.iou_sums = {cls: 0.0 for cls in self.classes}
