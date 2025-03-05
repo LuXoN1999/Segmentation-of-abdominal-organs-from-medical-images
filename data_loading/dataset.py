@@ -12,14 +12,14 @@ from data_loading import get_project_root
 from data_preprocessing import preprocess_image_and_mask
 
 
-def _get_x_paths() -> list[Path]:
+def _get_image_paths() -> list[Path]:
     """Fetches list of valid DICOM image paths inside CHAOS dataset folder."""
     dataset_path = get_project_root() / "CHAOS dataset"
     dcm_paths = sorted(glob(pathname=f"{dataset_path}/**/*.dcm", recursive=True))
-    return [Path(dcm_path) for dcm_path in dcm_paths if _get_y_path(path_to_image=dcm_path).exists()]
+    return [Path(dcm_path) for dcm_path in dcm_paths if _get_mask_path(path_to_image=dcm_path).exists()]
 
 
-def _get_y_path(path_to_image: str) -> Path:
+def _get_mask_path(path_to_image: str) -> Path:
     """Fetches mask path for given DICOM image path from CHAOS dataset folder."""
     mask_path = path_to_image.replace("DICOM_anon", "Ground")
     mask_path = mask_path.replace("InPhase", "").replace("OutPhase", "")
@@ -31,12 +31,12 @@ class CHAOSDataset(Dataset):
 
     def __init__(self, dataset_type: str, validation_split: float = 0.20, log_feedback: bool = False):
         self.dataset_type = dataset_type
-        self.image_paths = _get_x_paths()
+        self.image_paths = _get_image_paths()
         random.shuffle(self.image_paths)
 
         n_images = int(validation_split * len(self.image_paths))  # number of images to split
         self.image_paths = self.image_paths[n_images:] if self.dataset_type == "train" else self.image_paths[:n_images]
-        self.mask_paths = [_get_y_path(str(image_path)) for image_path in self.image_paths]
+        self.mask_paths = [_get_mask_path(str(image_path)) for image_path in self.image_paths]
 
         if log_feedback:
             ds_type_ext = "Training" if self.dataset_type == "train" else "Validation"
