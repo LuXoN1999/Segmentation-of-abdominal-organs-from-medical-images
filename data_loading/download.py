@@ -10,13 +10,13 @@ from data_loading import get_project_root
 DATASET_URL = ""  # to be added
 
 
-def __get_progress_bar(current, total, width=80):
+def _get_progress_bar(current, total, width=80):
     progress_message = f"Downloading dataset: {round(current / total * 100, 2)}% [{current} / {total}] bytes"
     sys.stdout.write("\r" + progress_message)
     sys.stdout.flush()
 
 
-def __unzip_dataset():
+def _unzip_dataset():
     print("\nExtracting dataset...")
     zip_file_path = "./CHAOS_dataset.zip"
     if not Path(zip_file_path).exists():
@@ -28,5 +28,5 @@ def __unzip_dataset():
 
 
 def download_and_unzip_dataset():
-    wget.download(url=DATASET_URL, bar=__get_progress_bar)
-    __unzip_dataset()
+    wget.download(url=DATASET_URL, bar=_get_progress_bar)
+    _unzip_dataset()
