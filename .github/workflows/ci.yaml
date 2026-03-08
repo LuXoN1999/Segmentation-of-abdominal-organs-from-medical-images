@@ -1,0 +1,10 @@
+name: Continous Integration
+
+on:
+  push:
+
+jobs:
+  temporary_name:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
