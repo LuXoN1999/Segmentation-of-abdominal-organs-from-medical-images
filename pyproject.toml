@@ -10,6 +10,7 @@ dependencies = [
     "numpy>=2.4.2",
     "pillow>=12.1.1",
     "pydicom>=3.0.1",
+    "ruff>=0.15.5",
     "tensorboard>=2.20.0",
     "torch>=2.10.0",
     "torchsummary>=1.5.1",
