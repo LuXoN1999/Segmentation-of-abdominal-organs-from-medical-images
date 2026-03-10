@@ -17,3 +17,65 @@ dependencies = [
     "torchvision>=0.25.0",
     "wget>=3.2",
 ]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint]
+select = [
+    "ERA",
+    "F",
+    "E",
+    "B",
+    "SIM",
+    "UP",
+    "PERF",
+    "S108",
+    "N80",
+    "I",
+    "TID",
+    "ICN",
+    "INP",
+    "FBT003",
+    "ARG",
+    "EM",
+    "ISC",
+    "LOG",
+    "A",
+    "PYI016",
+    "PYI030",
+    "PYI062",
+    "PIE796",
+    "RSE102",
+    "NPY",
+    "PLC0132",
+    "PLC0206",
+    "PLC1901",
+    "PLE1141",
+    "PLR171",
+    "PLR173",
+    "PLR20",
+    "PLR5501",
+    "PLW0133",
+    "PLW0245",
+    "PLW0711",
+    "PLW1501",
+    "PLW1507",
+    "PLW1514",
+    "FURB113",
+    "FURB118",
+    "RUF019",
+    "RUF047",
+    "RUF200",
+]
+
+ignore = [
+    "E501",
+    "COM812",
+    "COM819",
+]
